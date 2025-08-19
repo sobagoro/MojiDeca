@@ -13,7 +13,7 @@ public class GrowingTextController {
 
     @GetMapping("/")
     public String showForm() {
-        return "inputForm";
+        return "index";
     }
 
     /**
@@ -32,7 +32,7 @@ public class GrowingTextController {
     public String processText(@RequestParam("inputText") String inputText, Model model) {
         if (inputText.length() > MAX_CHARS) {
             model.addAttribute("error", "700文字以内で入力してください。");
-            return "inputForm";
+            return "index";
         }
 
         // テキストを行単位に分割
