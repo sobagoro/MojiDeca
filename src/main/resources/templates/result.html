@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>結果表示</title>
+  <style>
+    .result-container {
+      width: 70%;
+      margin: 0 auto; /* 左右のマージンを自動で均等にして中央配置 */
+    }
+  </style>
+</head>
+<body>
+  <h2>  </h2>
+  <div class="result-container" th:utext="${resultHtml}"></div>
+  <br>
+  <a href="/">戻る</a>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>文字が大きくなる入力フォーム</title>
+  <style>
+    #inputText::placeholder {
+      color: #bbb;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h2>デカ文字ブログシミュレーター（最大500文字）</h2>
+  <form action="#" th:action="@{/grow}" method="post">
+    <textarea id="inputText" name="inputText" rows="10" cols="60" maxlength="500" 
+      placeholder="！の数を応じて文字が徐々に大きくなります" required
+      oninput="growFont(this)"></textarea><br>
+    <button type="submit">表示</button>
+  </form>
+  <p style="color:red;" th:text="${error}"></p>
+
+  <script>
+    function growFont(textArea) {
+      const text = textArea.value;
+      const exclamations = (text.match(/!/g) || []).length;
+
+      // 最大フォントサイズは40px、ベースは14px
+      const minFontSize = 14;
+      const maxFontSize = 40;
+
+      // !の数が増えるごとにフォントサイズを上げる（最大20個で最大サイズ）
+      let newFontSize = minFontSize + exclamations * ((maxFontSize - minFontSize) / 20);
+      if (newFontSize > maxFontSize) {
+        newFontSize = maxFontSize;
+      }
+
+      textArea.style.fontSize = newFontSize + "px";
+    }
+  </script>
+</body>
+</html>
