@@ -7,8 +7,7 @@ WORKDIR /app
 # Mavenの依存キャッシュ活用のため、先にpom.xmlだけコピー
 COPY pom.xml mvnw ./
 COPY .mvn .mvn
-
-# 依存関係のダウンロード
+RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline
 
 # ソースコードをコピー
