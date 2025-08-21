@@ -61,19 +61,22 @@
       resize: vertical;
       min-height: 150px;
     }
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
     button {
-      display: block;
-      margin: 20px auto;
       padding: 12px 25px;
       font-size: 1rem;
-      background-color: #0052cc;
-      color: white;
-      border: none;
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s;
-      max-width: 200px;
-      width: 100%;
+      min-width: 100px;
+      border: none;
+      color: white;
+      background-color: #0052cc;
     }
     button:hover {
       background-color: #003d99;
@@ -93,7 +96,8 @@
       h3 { font-size: 1rem; margin: 0 5px 0 0; }
       .sample-link { font-size: 0.95rem; }
       textarea { font-size: 1.1rem; min-height: 180px; }
-      button { font-size: 1.2rem; max-width: none; }
+      button { font-size: 1.2rem; min-width: 80px; }
+      .button-group { gap: 8px; }
       .h3-row { max-width: 100%; margin: 0 auto 4px auto; padding: 0;}
     }
     /* タブレット用：600px～1024px */
@@ -103,7 +107,8 @@
       h3 { font-size: 1.1rem; margin: 0 6px 0 0;}
       .sample-link { font-size: 1rem; }
       textarea { font-size: 1.15rem; min-height: 200px; }
-      button { font-size: 1.1rem; max-width: 250px; }
+      button { font-size: 1.1rem; min-width: 120px; }
+      .button-group { gap: 10px; }
     }
     /* PC用：1025px以上 */
     @media (min-width: 1025px) {
@@ -112,41 +117,34 @@
       h3 { font-size: 1.2rem; margin: 0 6px 0 0;}
       .sample-link { font-size: 1rem; }
       textarea { font-size: 1rem; min-height: 220px; }
-      button { font-size: 1rem; }
+      button { font-size: 1rem; min-width: 120px; }
+      .button-group { gap: 12px; }
     }
   </style>
 </head>
 <body>
   <h2>デカ文字ブログシミュレーター</h2>
-  <h3 style="text-align:center;max-width:600px;margin-left:auto;margin-right:auto;">文中の！の数によって徐々に</h3>
+  <h3 style="text-align:center; max-width:600px; margin-left:auto; margin-right:auto;">
+    文中の"！"の数によって徐々に
+  </h3>
   <div class="h3-row">
-    <h3 style="margin-bottom:0;">文字が大きくなります</h3>
+    <h3 style="margin-bottom:0;">文字がデカくなります</h3>
     <a class="sample-link" href="#" onclick="insertSample(event)">サンプル</a>
   </div>
   <form id="mainForm" action="#" th:action="@{/grow}" method="post">
     <textarea id="inputText" name="inputText" rows="10" maxlength="700"
       placeholder="最大700文字まで" required
-      oninput="growFont(this)"></textarea><br>
-    <button type="submit">表示</button>
+      oninput="growFont(this)"></textarea>
+    <div class="button-group">
+      <button type="submit">表示</button>
+      <button type="button" onclick="clearInput()">クリア</button>
+    </div>
   </form>
   <p style="color:red;" th:text="${error}"></p>
-  <script>
-    function growFont(textArea) {
-      const text = textArea.value;
-      const exclamations = (text.match(/!/g) || []).length;
-      const minFontSize = 14;
-      const maxFontSize = 40;
-      let newFontSize = minFontSize + exclamations * ((maxFontSize - minFontSize) / 20);
-      if (newFontSize > maxFontSize) {
-        newFontSize = maxFontSize;
-      }
-      textArea.style.fontSize = newFontSize + "px";
-    }
 
-    // サンプル文挿入＆サブミット
-    function insertSample(e) {
-      e.preventDefault();
-      const sampleText = `今日も朝から満員電車！
+  <script>
+    // 長いテキストを変数化
+    const sampleText = `今日も朝から満員電車！
 すし詰め状態で体力奪われる。
 
 駅に着くと、すでにぐったり。
@@ -174,10 +172,34 @@
 でも、ビールだけが楽しみ！！
 
 明日こそ、いいことあるといいな！`;
+
+    function growFont(textArea) {
+      const text = textArea.value;
+      const exclamations = (text.match(/!/g) || []).length;
+      const minFontSize = 14;
+      const maxFontSize = 40;
+      let newFontSize = minFontSize + exclamations * ((maxFontSize - minFontSize) / 20);
+      if (newFontSize > maxFontSize) {
+        newFontSize = maxFontSize;
+      }
+      textArea.style.fontSize = newFontSize + "px";
+    }
+
+    // サンプル文挿入＆サブミット
+    function insertSample(e) {
+      e.preventDefault();
       const ta = document.getElementById("inputText");
       ta.value = sampleText;
       growFont(ta);
       document.getElementById("mainForm").submit();
+    }
+
+    // 入力クリア＆フォントサイズリセット
+    function clearInput() {
+      const ta = document.getElementById("inputText");
+      ta.value = "";
+      ta.style.fontSize = "1rem";
+      ta.focus();
     }
   </script>
 </body>
