@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class GrowingTextController {
-    private static final int MAX_CHARS = 500;
+    private static final int MAX_CHARS = 700;
     private static final double MAX_SCALE = 32.0;  // 最大倍率
 
     @GetMapping("/")

@@ -1,40 +1,183 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>文字が大きくなる入力フォーム</title>
+  <title>デカ文字ブログシミュレーター</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .h3-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 600px;
+      margin: 0 auto 5px auto;
+      padding: 0;
+    }
+    h3 {
+      font-size: 1.2rem;
+      text-align: center;
+      margin: 0 6px 0 0;
+      font-weight: normal;
+      color: #333;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .sample-link {
+      font-size: 1rem;
+      color: #0052cc;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-left: 8px;
+      padding: 2px 6px;
+    }
+    .sample-link:hover {
+      color: #003d99;
+      background: #e8e8ff;
+      border-radius: 3px;
+    }
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 10px;
+    }
+    textarea {
+      width: 100%;
+      font-size: 1rem;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+      resize: vertical;
+      min-height: 150px;
+    }
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 12px 25px;
+      font-size: 1rem;
+      background-color: #0052cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      max-width: 200px;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #003d99;
+    }
     #inputText::placeholder {
       color: #bbb;
-      font-size: 14px;
+      font-size: 1rem;
+    }
+    p[style] {
+      text-align: center;
+      margin-top: 10px;
+    }
+    /* スマホ用：画面幅599px以下 */
+    @media (max-width: 599px) {
+      body { margin: 15px 10px; }
+      h2 { font-size: 1.2rem; }
+      h3 { font-size: 1rem; margin: 0 5px 0 0; }
+      .sample-link { font-size: 0.95rem; }
+      textarea { font-size: 1.1rem; min-height: 180px; }
+      button { font-size: 1.2rem; max-width: none; }
+      .h3-row { max-width: 100%; margin: 0 auto 4px auto; padding: 0;}
+    }
+    /* タブレット用：600px～1024px */
+    @media (min-width: 600px) and (max-width: 1024px) {
+      body { margin: 30px auto; }
+      h2 { font-size: 1.4rem; }
+      h3 { font-size: 1.1rem; margin: 0 6px 0 0;}
+      .sample-link { font-size: 1rem; }
+      textarea { font-size: 1.15rem; min-height: 200px; }
+      button { font-size: 1.1rem; max-width: 250px; }
+    }
+    /* PC用：1025px以上 */
+    @media (min-width: 1025px) {
+      body { margin: 40px auto; }
+      h2 { font-size: 1.5rem; }
+      h3 { font-size: 1.2rem; margin: 0 6px 0 0;}
+      .sample-link { font-size: 1rem; }
+      textarea { font-size: 1rem; min-height: 220px; }
+      button { font-size: 1rem; }
     }
   </style>
 </head>
 <body>
-  <h2>デカ文字ブログシミュレーター（最大500文字）</h2>
-  <form action="#" th:action="@{/grow}" method="post">
-    <textarea id="inputText" name="inputText" rows="10" cols="60" maxlength="500" 
-      placeholder="！の数を応じて文字が徐々に大きくなります" required
+  <h2>デカ文字ブログシミュレーター</h2>
+  <h3 style="text-align:center;max-width:600px;margin-left:auto;margin-right:auto;">文中の！の数によって徐々に</h3>
+  <div class="h3-row">
+    <h3 style="margin-bottom:0;">文字が大きくなります</h3>
+    <a class="sample-link" href="#" onclick="insertSample(event)">サンプル</a>
+  </div>
+  <form id="mainForm" action="#" th:action="@{/grow}" method="post">
+    <textarea id="inputText" name="inputText" rows="10" maxlength="700"
+      placeholder="最大700文字まで" required
       oninput="growFont(this)"></textarea><br>
     <button type="submit">表示</button>
   </form>
   <p style="color:red;" th:text="${error}"></p>
-
   <script>
     function growFont(textArea) {
       const text = textArea.value;
       const exclamations = (text.match(/!/g) || []).length;
-
-      // 最大フォントサイズは40px、ベースは14px
       const minFontSize = 14;
       const maxFontSize = 40;
-
-      // !の数が増えるごとにフォントサイズを上げる（最大20個で最大サイズ）
       let newFontSize = minFontSize + exclamations * ((maxFontSize - minFontSize) / 20);
       if (newFontSize > maxFontSize) {
         newFontSize = maxFontSize;
       }
-
       textArea.style.fontSize = newFontSize + "px";
+    }
+
+    // サンプル文挿入＆サブミット
+    function insertSample(e) {
+      e.preventDefault();
+      const sampleText = `今日も朝から満員電車！
+すし詰め状態で体力奪われる。
+
+駅に着くと、すでにぐったり。
+
+会社に着いてコーヒーで一息。
+
+でもすぐに会議の通知！
+
+上司の話、毎回同じ内容。
+
+気づけば机の上は書類の山！
+
+どこから片づけていいものか。
+
+電話も鳴りっぱなしでうるさい！
+
+昼休み、唯一の癒やしタイム。
+
+同僚と愚痴を言い合う
+
+みんな似たような悩みばかり！
+
+帰り道、今日も疲れたなぁ！
+
+でも、ビールだけが楽しみ！！
+
+明日こそ、いいことあるといいな！`;
+      const ta = document.getElementById("inputText");
+      ta.value = sampleText;
+      growFont(ta);
+      document.getElementById("mainForm").submit();
     }
   </script>
 </body>
